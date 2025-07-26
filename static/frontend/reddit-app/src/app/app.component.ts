@@ -38,10 +38,21 @@ export class AppComponent implements OnInit, AfterContentChecked {
   }
 
   ngOnInit(): void {
+    console.log('AppComponent ngOnInit called');
     this.searchField = new FormGroup({
       search: new FormControl('')
     });
-    this.userService.fetchUser((user) => this.user = user);
+    
+    // Add error handling to prevent initialization issues
+    try {
+      this.userService.fetchUser((user) => {
+        console.log('User fetched:', user);
+        this.user = user;
+      });
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      this.user = null;
+    }
   }
 
   ngAfterContentChecked(): void {
@@ -55,19 +66,22 @@ export class AppComponent implements OnInit, AfterContentChecked {
   }
 
   logout() {
+    console.log('Logout button clicked');
     this.userService.logout().subscribe(
       (response: any) => {
+        console.log('Logout response:', response);
         if(response){
           this.storage.removeItem('user');
           window.location.href = `${environment.loginUrl}`;
         }
       },
       (error) => {
-        console.log(error);
+        console.log('Logout error:', error);
       });
   }
 
   createGroup() {
+    console.log('Create group button clicked');
     const dialogRef = this.dialog.open(CreateGroupComponent, {
       data: {
         user: this.user,
@@ -81,7 +95,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     });
   }
   search() {
-
+    console.log('Search button clicked');
     this.router.navigate(['search'], {
       queryParams: {
         query: this.searchField.value.search,
