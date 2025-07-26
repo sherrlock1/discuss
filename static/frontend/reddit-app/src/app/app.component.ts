@@ -23,6 +23,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   user: User;
   value = 'Search';
   searchField: FormGroup;
+  currentTime: string;
 
   constructor(
     private router: Router,
@@ -39,6 +40,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
 
   ngOnInit(): void {
     console.log('AppComponent ngOnInit called');
+    this.currentTime = new Date().toLocaleTimeString();
     this.searchField = new FormGroup({
       search: new FormControl('')
     });

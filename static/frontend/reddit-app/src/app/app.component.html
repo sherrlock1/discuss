@@ -1,4 +1,8 @@
 <div class="">
+  <!-- Debug indicator to show Angular is working -->
+  <div style="background: green; color: white; padding: 5px; text-align: center;" *ngIf="!authRoute">
+    ✅ Angular App is Working! User: {{user?.username || 'Not logged in'}} - Time: {{currentTime}}
+  </div>
   <mat-toolbar color="secondary" class="header shadow-sm" *ngIf="!authRoute">
     <div class="nav-links">
       <img src="../assets/favicon/apple-touch-icon.png" alt="Icon" height="30" width="30">

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Angular App</title>
+</head>
+<body>
+    <h1>Testing Angular App</h1>
+    <p>This page will test if the Angular app is working by loading it in an iframe and checking console logs.</p>
+    
+    <iframe id="app-frame" src="https://work-2-otvuwyhcdtyibpym.prod-runtime.all-hands.dev/django_reddit" width="100%" height="600px"></iframe>
+    
+    <script>
+        // Wait for the iframe to load and then check console
+        document.getElementById('app-frame').onload = function() {
+            console.log('Angular app iframe loaded');
+            
+            // Try to access the iframe's console (may be blocked by CORS)
+            try {
+                var iframeWindow = document.getElementById('app-frame').contentWindow;
+                console.log('Iframe window accessible:', !!iframeWindow);
+            } catch (e) {
+                console.log('Cannot access iframe due to CORS:', e.message);
+            }
+        };
+        
+        // Log that this test page is working
+        console.log('Test page loaded successfully');
+    </script>
+</body>
+</html>
