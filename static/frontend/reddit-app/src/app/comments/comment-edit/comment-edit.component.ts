@@ -53,7 +53,15 @@ export class CommentEditComponent implements OnInit {
   }
 
   submit() {
+    console.log('Comment submit clicked');
+    console.log('Form valid:', this.commentForm.valid);
+    console.log('Form value:', this.commentForm.value);
+    console.log('Form errors:', this.commentForm.errors);
+    
     if (this.commentForm.invalid) {
+      console.log('Form is invalid, not submitting');
+      console.log('Comment control errors:', this.commentForm.get('comment')?.errors);
+      console.log('Comment value length:', this.commentForm.value.comment?.length);
       return;
     }
     let id = null;
@@ -103,21 +111,23 @@ export class CommentEditComponent implements OnInit {
 
 
   createComment(comment) {
+    console.log('Creating comment with data:', comment);
+    console.log('Post UUID:', this.uuid);
+    
     this.commentForm.reset(this.commentForm.value.comment);
     this.clear_comment.emit(true);
     this.comment_loading = true;
-    // console.log(this.source);
 
     this.commentService.createComment(this.uuid, comment).subscribe(
       (response: Comment) => {
+        console.log('Comment created successfully:', response);
         this.comment_loading = false;
-        // console.log(response);
         this.comment_response.emit(response);
         this.clear_comment.emit(true);
         this.mentioned_user_ids.length = 0;
       }, (err) => {
-        console.log(err);
-        // this.commentForm.reset(this.commentForm.value.comment);
+        console.error('Error creating comment:', err);
+        console.error('Error details:', err.error);
         this.comment_loading = false;
       }
     )

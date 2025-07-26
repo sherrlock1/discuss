@@ -41,7 +41,7 @@ export class SignInComponent implements OnInit {
     
     if (!this.loginForm.valid) {
       console.log('Form is invalid, not submitting');
-      this.snackbar.open('Please fill in all required fields');
+      this.snackbar.open('Please fill in all required fields', 'Close', { duration: 3000 });
       return;
     }
 
@@ -72,7 +72,7 @@ export class SignInComponent implements OnInit {
           }
         });
         
-        this.snackbar.open('Successfully logged in');
+        this.snackbar.open('Successfully logged in', 'Close', { duration: 3000 });
         this.router.navigate(['']);
       },
       (err) => {
@@ -80,14 +80,14 @@ export class SignInComponent implements OnInit {
         this.isLoading = false;
         if (err.error) {
           if (err.error.non_field_errors) {
-            this.snackbar.open(err.error.non_field_errors[0]);
+            this.snackbar.open(err.error.non_field_errors[0], 'Close', { duration: 5000 });
           } else if (err.error.email) {
-            this.snackbar.open(err.error.email[0]);
+            this.snackbar.open(err.error.email[0], 'Close', { duration: 5000 });
           } else {
-            this.snackbar.open('Login failed. Please try again.');
+            this.snackbar.open('Login failed. Please try again.', 'Close', { duration: 5000 });
           }
         } else {
-          this.snackbar.open('Network error. Please check your connection.');
+          this.snackbar.open('Network error. Please check your connection.', 'Close', { duration: 5000 });
         }
       }
     );

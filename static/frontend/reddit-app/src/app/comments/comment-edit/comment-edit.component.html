@@ -16,7 +16,7 @@
 
       <div fxLayout="row" style="justify-content:flex-end" fxLayoutGap="16px">
         <button mat-flat-button *ngIf="commentForm.valid" (click)="cancel()">Cancel</button>
-        <button mat-flat-button [disabled]="!commentForm.valid" (click)="submit()">{{ new ? 'Comment': 'Save' }}</button>
+        <button mat-flat-button [disabled]="comment_loading" (click)="submit()">{{ new ? 'Comment': 'Save' }}</button>
       </div>
     </form>
   </div>

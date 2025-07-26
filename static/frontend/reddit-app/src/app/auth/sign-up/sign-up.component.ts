@@ -54,7 +54,7 @@ export class SignUpComponent implements OnInit {
     
     if (!this.registerForm.valid) {
       console.log('Form is invalid, not submitting');
-      this.snackbar.open('Please fill in all required fields');
+      this.snackbar.open('Please fill in all required fields', 'Close', { duration: 3000 });
       return;
     }
 
@@ -74,7 +74,7 @@ export class SignUpComponent implements OnInit {
         console.log('Registration successful:', result);
         this.isLoading = false;
         this.registerForm.reset();
-        this.snackbar.open('Registered successfully. Proceed to login');
+        this.snackbar.open('Registered successfully. Proceed to login', 'Close', { duration: 3000 });
         this.router.navigate(['sign-in']);
       },
       (err) => {
@@ -82,16 +82,16 @@ export class SignUpComponent implements OnInit {
         this.isLoading = false;
         if (err.error) {
           if (err.error.password1) {
-            this.snackbar.open(`${err.error.password1[0]}`);
+            this.snackbar.open(`${err.error.password1[0]}`, 'Close', { duration: 5000 });
           } else if (err.error.email) {
-            this.snackbar.open(`${err.error.email[0]}`);
+            this.snackbar.open(`${err.error.email[0]}`, 'Close', { duration: 5000 });
           } else if (err.error.non_field_errors) {
-            this.snackbar.open(err.error.non_field_errors[0]);
+            this.snackbar.open(err.error.non_field_errors[0], 'Close', { duration: 5000 });
           } else {
-            this.snackbar.open('Registration failed. Please try again.');
+            this.snackbar.open('Registration failed. Please try again.', 'Close', { duration: 5000 });
           }
         } else {
-          this.snackbar.open('Network error. Please check your connection.');
+          this.snackbar.open('Network error. Please check your connection.', 'Close', { duration: 5000 });
         }
       }
     );
