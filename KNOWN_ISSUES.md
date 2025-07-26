@@ -4,7 +4,34 @@ This document outlines known issues, limitations, and workarounds for the Django
 
 ## 🚨 Critical Issues
 
-### 1. Frontend Display Issue - Only Font Visible
+### 1. Submit Button Functionality Issue
+**Status**: ✅ **RESOLVED**  
+**Affected Components**: Sign-in and Sign-up forms  
+**Description**: Submit buttons were not working due to multiple cascading issues including Django URL configuration errors, Angular SPA routing problems, and static file serving issues.
+
+**Root Causes Identified**:
+1. **NoReverseMatch Error**: Django LOGIN_REDIRECT_URL and LOGOUT_REDIRECT_URL were pointing to non-existent 'home' URL pattern
+2. **Angular SPA Routing**: Django was not configured to handle client-side routing for Angular paths like `/django_reddit/sign-in`
+3. **Static File Paths**: Incorrect static file references preventing JavaScript from loading properly
+4. **Environment Configuration**: Inconsistent URL configurations between development and production environments
+
+**Solutions Applied**:
+1. **Fixed Django URL Redirects**: Updated LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL, and ACCOUNT_LOGOUT_REDIRECT to use 'angular_app'
+2. **Enabled SPA Routing**: Changed Django URL pattern from `path('django_reddit/')` to `re_path(r'^django_reddit/.*$')` to catch all Angular routes
+3. **Fixed Static File Serving**: Updated template paths to use `/static/` prefix for all assets (CSS, JS, favicons)
+4. **Rebuilt Angular App**: Fresh build with corrected environment configuration and proper static file deployment
+5. **Verified API Connectivity**: Confirmed registration and login APIs working correctly with proper auth token responses
+
+**Verification**:
+- ✅ All Angular routes working (/, /sign-in, /sign-up) - HTTP 200 responses
+- ✅ Submit buttons functional with proper click handlers
+- ✅ JavaScript files loading correctly (main.js: 2.1MB)
+- ✅ API endpoints tested and working (registration returns auth tokens)
+- ✅ Static files served properly via Django static file serving
+- ✅ No more NoReverseMatch errors in Django logs
+- ✅ Form submission triggers onSubmit() methods successfully
+
+### 2. Frontend Display Issue - Only Font Visible
 **Status**: ✅ **RESOLVED**  
 **Affected Components**: Entire Angular frontend  
 **Description**: Angular application was loading but only showing font/text in top left corner due to broken CSS imports.
@@ -25,7 +52,7 @@ The `styles.scss` file contained imports for Froala Editor CSS files that no lon
 - ✅ Django API connectivity working (port 12000)
 - ✅ Styles loading properly
 
-### 2. Froala WYSIWYG Editor Replaced with CKEditor
+### 3. Froala WYSIWYG Editor Replaced with CKEditor
 **Status**: ✅ **Resolved**  
 **Affected Components**: Post creation, comment editing  
 **Description**: Successfully replaced Froala editor with CKEditor 5 to resolve licensing and compatibility issues.
@@ -117,16 +144,20 @@ CORS_ALLOWED_ORIGINS = [
 ## 📱 Frontend Issues
 
 ### 6. Angular Routing Configuration
-**Status**: ⚠️ **Partial Issue**  
-**Description**: Angular app expects to be served from `/django_reddit` path.
+**Status**: ✅ **RESOLVED**  
+**Description**: Angular SPA routing now properly configured for all application routes.
 
-**Current Behavior**:
+**Previous Behavior**:
 - ✅ Works: `http://localhost:4200/django_reddit`
-- ❌ Fails: `http://localhost:4200/`
+- ❌ Fails: `http://localhost:4200/django_reddit/sign-in` (404 error)
 
-**Impact**: 
-- ⚠️ Specific URL path required
-- ✅ Application functions normally on correct path
+**Solution Applied**:
+- Updated Django URL pattern to `re_path(r'^django_reddit/.*', ...)` to catch all SPA routes
+- All Angular routes now work correctly (`/django_reddit/sign-in`, `/django_reddit/sign-up`, etc.)
+
+**Current Status**: 
+- ✅ All Angular routes functional
+- ✅ SPA navigation working properly
 
 ### 7. Environment Configuration Hardcoded
 **Status**: ⚠️ **Needs Improvement**  
@@ -309,7 +340,7 @@ If you encounter additional issues:
 
 ### External URLs (Production-Ready)
 - ✅ **Django API**: `https://work-1-otvuwyhcdtyibpym.prod-runtime.all-hands.dev/api/v1/posts/`
-- ✅ **Angular Frontend**: `https://work-2-otvuwyhcdtyibpym.prod-runtime.all-hands.dev/django_reddit`
+- ✅ **Angular Frontend**: `https://work-1-otvuwyhcdtyibpym.prod-runtime.all-hands.dev/django_reddit/`
 
 ### API Status
 - ✅ **Posts Endpoint**: Returning 40 test posts with full data
@@ -326,16 +357,19 @@ If you encounter additional issues:
 - ✅ **External Access**: Frontend accessible via external URL
 
 ### Recent Fixes Applied
-1. **Angular Routing**: Fixed baseHref and servePath configuration
-2. **API URLs**: Updated environment.ts to use correct port (12000)
-3. **CKEditor Integration**: Successfully replaced Froala with CKEditor 5
-4. **CORS Setup**: Configured for development and production URLs
-5. **CSS Loading Issue**: **FIXED** - Removed broken Froala CSS imports
-6. **Port Configuration**: Updated Angular dev server to use port 12001 for external access
-7. **Git Management**: All changes committed and pushed to main branch
+1. **Submit Button Fix**: **FIXED** - Removed disabled attributes from form buttons
+2. **Angular SPA Routing**: **FIXED** - Updated Django URL patterns to handle all SPA routes
+3. **Static File Deployment**: **FIXED** - Rebuilt and deployed updated Angular app
+4. **Angular Routing**: Fixed baseHref and servePath configuration
+5. **API URLs**: Updated environment.ts to use correct port (12000)
+6. **CKEditor Integration**: Successfully replaced Froala with CKEditor 5
+7. **CORS Setup**: Configured for development and production URLs
+8. **CSS Loading Issue**: **FIXED** - Removed broken Froala CSS imports
+9. **Port Configuration**: Updated Angular dev server to use port 12001 for external access
+10. **Git Management**: All changes committed and pushed to main branch
 
 ### Application Status
-✅ **FULLY FUNCTIONAL** - Both Django API and Angular frontend are now working correctly and accessible via external URLs. The critical CSS loading issue has been resolved.
+✅ **FULLY FUNCTIONAL** - Both Django API and Angular frontend are now working correctly and accessible via external URLs. All critical issues including submit button functionality and Angular routing have been resolved.
 
 ---
 
