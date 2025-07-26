@@ -54,9 +54,24 @@ export class SignInComponent implements OnInit {
     this.isLoading = true;
     
     this.userService.login(loginData).subscribe(
-      (result) => {
+      (result: any) => {
         console.log('Login successful:', result);
         this.isLoading = false;
+        
+        // Store the auth token if provided
+        if (result.key) {
+          localStorage.setItem('auth_token', result.key);
+          console.log('Auth token stored:', result.key);
+        }
+        
+        // Fetch user profile after successful login
+        this.userService.getAuthUser((user) => {
+          console.log('User profile fetched after login:', user);
+          if (user) {
+            this.userService.setUser(user);
+          }
+        });
+        
         this.snackbar.open('Successfully logged in');
         this.router.navigate(['']);
       },

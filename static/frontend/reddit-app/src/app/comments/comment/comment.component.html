@@ -1,7 +1,7 @@
 <div *ngIf="comment && !comment.is_removed">
   <div fxLayout="row" style="width:100%; margin:16px 0; padding: 16px 0" *ngIf="comment && !edit_mode">
     <div fxLayout="column" fxFlex="56px" class="col-user">
-      <img class="user-avatar" src="../../../assets/images/default_user.png" alt="">
+      <img class="user-avatar" src="/static/assets/images/default_user.png" alt="">
     </div>
     <div fxLayout="column" fxFlex="90">
       <div fxLayout="row" class="margin-0">
@@ -82,7 +82,7 @@
 
 <div *ngIf="comment.is_removed" style="width:100%; margin:16px 0; padding: 16px 0">
   <div fxLayout="column" fxFlex="8.65" class="col-user">
-    <img src="../../../assets/images/default_user.png" alt="">
+    <img src="/static/assets/images/default_user.png" alt="">
   </div>
   <div fxLayout="column" fxFlex="90">
     <div class="font-xs" fxLayout="row" fxLayoutAlign="center center" style="height: 40px; background: #f4f4f4; border-radius: 12px;">

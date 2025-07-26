@@ -50,6 +50,12 @@ export class AppComponent implements OnInit, AfterContentChecked {
     // Test API connectivity
     this.testApiConnectivity();
     
+    // Subscribe to user changes
+    this.userService.user?.subscribe((user) => {
+      console.log('User state changed:', user);
+      this.user = user;
+    });
+    
     // Add error handling to prevent initialization issues
     try {
       this.userService.fetchUser((user) => {
@@ -90,13 +96,21 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.userService.logout().subscribe(
       (response: any) => {
         console.log('Logout response:', response);
-        if(response){
-          this.storage.removeItem('user');
-          window.location.href = `${environment.loginUrl}`;
-        }
+        // Clear user data and auth token
+        this.storage.removeItem('user');
+        localStorage.removeItem('auth_token');
+        this.userService.unsetUser();
+        this.user = null;
+        window.location.href = `${environment.loginUrl}`;
       },
       (error) => {
         console.log('Logout error:', error);
+        // Even if logout fails on server, clear local data
+        this.storage.removeItem('user');
+        localStorage.removeItem('auth_token');
+        this.userService.unsetUser();
+        this.user = null;
+        window.location.href = `${environment.loginUrl}`;
       });
   }
 

@@ -50,10 +50,13 @@ export class UserService {
   }
 
   getAuthUser(callback: (user: User) => any): void {
-    this.http.get(this.serverUrl + '/api/v1/users/auth/').subscribe(
+    console.log('UserService: Fetching authenticated user from:', this.serverUrl + '/rest-auth/user/');
+    this.http.get(this.serverUrl + '/rest-auth/user/').subscribe(
       (response: Object) => {
+        console.log('UserService: Auth user response:', response);
         callback(response as User);
       }, (error: any) => {
+        console.error('UserService: Auth user error:', error);
         callback(null);
       }
     );
