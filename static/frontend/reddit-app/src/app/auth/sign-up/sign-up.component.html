@@ -39,7 +39,7 @@
       </div>
 
       <button mat-button color="primary" class="width-100 custom-button block-button"
-        [disabled]="!registerForm.valid || isLoading" (click)="onSubmit()" >Submit</button>
+        (click)="onSubmit()" >Submit</button>
 
       <p>Already have an account? <a class="underline button-link" [routerLink]="['../sign-in']">Sign In</a></p>
 
