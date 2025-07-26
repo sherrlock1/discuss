@@ -13,12 +13,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 import sys
 
-def get_env_variable(var_name):
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        error_msg = 'Set the %s environment variable' % var_name
-        return None
+def get_env_variable(var_name, default=None):
+    """Get environment variable or return default value"""
+    return os.environ.get(var_name, default)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,14 +25,22 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_variable('SECRET_KEY')
+SECRET_KEY = get_env_variable('SECRET_KEY', 'django-insecure-development-key-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = get_env_variable('DEBUG', 'True').lower() in ('true', '1', 'yes', 'on')
 
-ALLOWED_HOSTS = [
-    '*'
-]
+# Environment-based configuration
+ENVIRONMENT = get_env_variable('ENVIRONMENT', 'development')
+
+if ENVIRONMENT == 'production':
+    DEBUG = False
+    ALLOWED_HOSTS = get_env_variable('ALLOWED_HOSTS', '').split(',')
+    if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
+        ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+else:
+    # Development settings
+    ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -114,12 +119,36 @@ WSGI_APPLICATION = 'reddit_clone.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# Database configuration
+# Use PostgreSQL in production, SQLite for development
+DATABASE_URL = get_env_variable('DATABASE_URL')
+
+if DATABASE_URL:
+    # Parse DATABASE_URL for PostgreSQL
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
     }
-}
+elif ENVIRONMENT == 'production':
+    # Production PostgreSQL configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': get_env_variable('DB_NAME', 'reddit_clone'),
+            'USER': get_env_variable('DB_USER', 'postgres'),
+            'PASSWORD': get_env_variable('DB_PASSWORD', ''),
+            'HOST': get_env_variable('DB_HOST', 'localhost'),
+            'PORT': get_env_variable('DB_PORT', '5432'),
+        }
+    }
+else:
+    # Development SQLite configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

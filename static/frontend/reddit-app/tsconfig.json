@@ -12,6 +12,9 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "lib": [

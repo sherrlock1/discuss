@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { MatDialog } from '@angular/material/dialog';
 import { HttpEventType } from '@angular/common/http';
 // import FroalaEditor from 'froala-editor';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { PostService } from '@reddit/core/services/post/post.service';
 import { UserService } from '@reddit/core/services/user/user.service';
 import { GroupService } from '@reddit/core/services/group/group.service';
@@ -20,7 +21,36 @@ import { Group } from '@reddit/core/models/group.model';
   styleUrls: ['./create-post.component.scss']
 })
 export class CreatePostComponent implements OnInit {
-  public editor;
+  public Editor = ClassicEditor;
+  public editorConfig = {
+    toolbar: {
+      items: [
+        'heading',
+        '|',
+        'bold',
+        'italic',
+        'link',
+        'bulletedList',
+        'numberedList',
+        '|',
+        'outdent',
+        'indent',
+        '|',
+        'blockQuote',
+        'insertTable',
+        'undo',
+        'redo'
+      ]
+    },
+    language: 'en',
+    table: {
+      contentToolbar: [
+        'tableColumn',
+        'tableRow',
+        'mergeTableCells'
+      ]
+    }
+  };
 
   postForm: FormGroup;
   content: any;
@@ -61,77 +91,13 @@ export class CreatePostComponent implements OnInit {
     this.isLoading = false;
   }
 
-  public options: Object = {
-    iframe: true,
-    attribution: false,
-    autofocus: true,
-    placeholderText: 'Add content',
-    fontFamilyDefaultSelection: 'Roboto',
-    charCounterCount: true,
-    toolbarInline: false,
-    spellcheck: true,
-    tooltips: false,
-    multiLine: true,
-    pastePlain: true,
-    heightMin: 400,
-    quickInsertEnabled: false,
-    pluginsEnabled: ['aviary', 'image', 'fontFamily', 'fontSize', 'help', 'colors', 'paragraphStyle', 'align', 'lists', 'outdent', 'indent', 'paragraphFormat', 'specialCharacters', 'hr', 'clearFormatting', 'link', 'embedly', 'file', 'table', 'undo', 'redo', 'spellchecker'],
-    toolbarButtons: {
-      'moreText': {
-        'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript'],
-        'buttonsVisible': 6
-      },
-      'moreParagraph': {
-        'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'quote'],
-        'buttonsVisible': 5
-      },
-      'moreRich': {
-        'buttons': ['insertLink', 'insertImage', 'insertVideo', 'insertTable', 'insertFile'],
-        align: 'left',
-        'buttonsVisible': 3
-      },
-      'moreMisc': {
-        'buttons': ['undo', 'redo', 'help'],
-        align: 'left',
-        'buttonsVisible': 3
-      }
-    },
-    imageAddNewLine: true,
-    imageDefaultMargin: 7,
-    imageEditButtons: ['imageReplace', 'imageAlign', 'imageCaption', 'imageRemove', 'imageDisplay',
-      'imageSize', 'imageStyle', 'imageAlt'],
-    imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL', 'imageManager'],
-    imageMove: false,
-    imagePaste: false,
-    imageResizeWithPercent: true, // sets image size in percent
-    imageDefaultWidth: 100, // sets default as 100%
-    videoResponsive: true,
-    videoInsertButtons: ['videoBack', '|', 'videoEmbed', 'videoByURL',],
-    videoAllowedTypes: ['mp4'],
-    videoAllowedProviders: ['youtube', 'vimeo'],
-    videoEditButtons: ['videoReplace', 'videoRemove'],
-    videoUpload: false,
-    videoResize: false,
-    videoSplitHTML: true,
-    linkInsertButtons: ['linkBack'],
-    events: {
-      'initialized': function(e, that = this) {
-        console.log(e);
-      },
-      'video.inserted': () => {
-      },
-      'video.removed': () => {
-      },
-      'image.uploaded': () => {
-      },
-      'image.removed': () => {
-      },
-    }
+  public onEditorReady(editor: any) {
+    console.log('CKEditor is ready to use!', editor);
   }
 
-  public initializeFroala(initControls) {
-    initControls.initialize();
-    this.editor = initControls.getEditor();
+  public onEditorChange(event: any, editor: any) {
+    const data = editor.getData();
+    this.postForm.patchValue({ content: data });
   }
 
   getAuthUser(): void {

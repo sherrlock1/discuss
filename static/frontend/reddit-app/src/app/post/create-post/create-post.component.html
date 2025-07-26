@@ -23,11 +23,15 @@
 
       <div class=""></div>
 
-      <mat-form-field appearance="none" class="width-100">
-        <textarea matInput (froalaInit)="initializeFroala($event)" [froalaEditor]="options" formControlName="content"
-          cdkTextareaAutosize cdkAutosizeMinRows="3" class="font-sm fr-view-text" style="font-family: Roboto">
-        </textarea>
-      </mat-form-field>
+      <div class="editor-container width-100">
+        <ckeditor 
+          [editor]="Editor" 
+          [config]="editorConfig"
+          formControlName="content"
+          (ready)="onEditorReady($event)"
+          (change)="onEditorChange($event, $event.editor)">
+        </ckeditor>
+      </div>
 
       <!-- <input type="file"  formControlName="cover" (change)="onFileSelected($event.target.files)" #fileUpload> -->
 
