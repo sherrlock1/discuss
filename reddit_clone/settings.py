@@ -212,7 +212,9 @@ CORS_PREFLIGHT_MAX_AGE = 86400
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:4200",
-    "https://madhvi-n.github.io"
+    "https://madhvi-n.github.io",
+    "https://work-1-otvuwyhcdtyibpym.prod-runtime.all-hands.dev",
+    "https://work-2-otvuwyhcdtyibpym.prod-runtime.all-hands.dev"
 ]
 
 

@@ -6,7 +6,7 @@ import { DatePipe } from '@angular/common';
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { MatDialog } from '@angular/material/dialog';
 import { HttpEventType } from '@angular/common/http';
-import FroalaEditor from 'froala-editor';
+// import FroalaEditor from 'froala-editor';
 import { PostService } from '@reddit/core/services/post/post.service';
 import { UserService } from '@reddit/core/services/user/user.service';
 import { GroupService } from '@reddit/core/services/group/group.service';

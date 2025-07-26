@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
   baseUrl: '/api/v1/',
-  serverUrl: 'http://localhost:8000',
-  appUrl: 'http://localhost:4200',
-  loginUrl: 'http://localhost:4200/sign-in',
+  serverUrl: 'https://work-1-otvuwyhcdtyibpym.prod-runtime.all-hands.dev',
+  appUrl: 'https://work-2-otvuwyhcdtyibpym.prod-runtime.all-hands.dev',
+  loginUrl: 'https://work-2-otvuwyhcdtyibpym.prod-runtime.all-hands.dev/sign-in',
   staticUrl: '../assets/images/'
 };

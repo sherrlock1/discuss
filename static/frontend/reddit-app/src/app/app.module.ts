@@ -20,7 +20,7 @@ import { AuthInterceptor } from './auth.interceptor';
 import { HttpXsrfInterceptor } from './auth.header.interceptor';
 
 import { TimeSinceModule } from '@thisissoon/angular-timesince';
-import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
+// import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SafeContentPipe } from '@reddit/core/pipes/safe-content/safe-content.pipe';
 
@@ -122,8 +122,8 @@ import { GroupSearchComponent } from './group/group-search/group-search.componen
     CommonModule,
     TimeSinceModule,
     MaterialModule.forRoot(),
-    FroalaViewModule.forRoot(),
-    FroalaEditorModule.forRoot(),
+    // FroalaViewModule.forRoot(),
+    // FroalaEditorModule.forRoot(),
     AppRoutingModule,
   ],
   providers: [  CookieService,
