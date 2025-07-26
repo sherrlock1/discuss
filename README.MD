@@ -1,13 +1,11 @@
-# Django Reddit
+# Django Reddit Clone
 
-[![Django CI](https://github.com/madhvi-n/django-reddit/actions/workflows/django.yml/badge.svg)](https://github.com/madhvi-n/django-reddit/actions/workflows/django.yml)
-[![CodeQL](https://github.com/madhvi-n/django-reddit/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/madhvi-n/django-reddit/actions/workflows/github-code-scanning/codeql)
 [![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat&logo=python&logoColor=white)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-3.1-brightgreen?style=flat&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![Django Rest Framework](https://img.shields.io/badge/Django_Rest_Framework-3.11-red?style=flat&logo=django&logoColor=white)](https://www.django-rest-framework.org/)
+[![Django](https://img.shields.io/badge/Django-3.1.14-brightgreen?style=flat&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Django Rest Framework](https://img.shields.io/badge/Django_Rest_Framework-3.11.2-red?style=flat&logo=django&logoColor=white)](https://www.django-rest-framework.org/)
 [![Angular](https://img.shields.io/badge/Angular-10-blueviolet?style=flat&logo=angular&logoColor=white)](https://angular.io/)
 
-A **feature-rich Reddit clone** built using **Django** for the backend and **Angular** for the frontend. This project allows users to create, interact, and engage in discussions within communities.
+A **full-stack Reddit clone** built with **Django REST Framework** backend and **Angular** frontend. This application provides a complete social media platform with user authentication, community features, and real-time interactions.
 
 ## 🚀 Features
 
@@ -37,126 +35,201 @@ A **feature-rich Reddit clone** built using **Django** for the backend and **Ang
 
 ### Backend
 - Python 3.8+
-- virtualenv
-- WSL (Windows Subsystem for Linux)
+- Django 3.1.14
+- Django REST Framework 3.11.2
+- SQLite (default) or PostgreSQL
 
 ### Frontend
-- Angular 10.2.4 (or 10.2.5)
-- Node 10.13.x+
+- Node.js 14+ (with legacy OpenSSL provider support)
+- Angular 10
+- Angular CLI
 
+## ⚙️ Quick Start
 
-## ⚙️ Installation
+### 1. Clone and Setup Backend
+```bash
+git clone https://github.com/sherrlock1/discuss.git
+cd discuss
 
-### Backend Setup
-1. Clone the repository and navigate to the project directory:
-    ```bash
-    git clone https://github.com/madhvi-n/django-reddit.git
-    cd django-reddit
-    ```
+# Install Python dependencies
+pip install -r requirements.txt
 
-2. Create and activate a virtual environment:
-    ```bash
-    virtualenv venv
-    source venv/bin/activate  # For macOS/Linux
-    venv\Scripts\activate     # For Windows
-    ```
+# Apply database migrations
+python manage.py migrate
 
-3. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+# Create superuser (optional)
+python manage.py createsuperuser
 
-4. Set the **Django Secret Key**:
-    - Edit `reddit_clone/settings.py` and manually set a secret key.
-    - Or, export `SECRET_KEY` in your environment variables.
+# Populate sample data (optional)
+python manage.py shell
+# Run the sample data creation commands (see Management Commands section)
 
-5. Apply database migrations:
-    ```bash
-    python manage.py migrate
-    ```
+# Start Django server
+python manage.py runserver 0.0.0.0:8000
+```
 
-6. Run the development server:
-    ```bash
-    python manage.py runserver
-    ```
+### 2. Setup Frontend
+```bash
+# Navigate to frontend directory
+cd static/frontend/reddit-app
 
-    Visit **`http://127.0.0.1:8000/`** to access the app.
+# Install Angular dependencies
+npm install
 
+# Start Angular development server
+NODE_OPTIONS="--openssl-legacy-provider" ng serve --host 0.0.0.0 --port 4200
+```
 
+### 3. Access the Application
+- **Frontend**: http://localhost:4200/django_reddit
+- **Backend API**: http://localhost:8000/api/v1/
+- **Admin Panel**: http://localhost:8000/admin/
 
-### 🌐 Frontend Setup
-1. Navigate to the frontend directory:
-    ```bash
-    cd static/frontend/reddit-app
-    ```
+## 🚀 Deployment Configuration
 
-2. Install Angular dependencies:
-    ```bash
-    npm install
-    ```
+The application is configured for deployment with the following features:
 
-3. Run the frontend development server:
-    ```bash
-    ng serve
-    ```
+### Backend (Django)
+- **CORS Headers**: Configured for cross-origin requests
+- **Static Files**: Whitenoise middleware for serving static files
+- **Database**: SQLite with sample data populated
+- **API Documentation**: Available at `/api/swagger/` and `/api/redoc/`
 
-    Visit **`http://127.0.0.1:4200/`** to access the frontend.
+### Frontend (Angular)
+- **Environment Configuration**: Separate development and production environments
+- **TypeScript**: Configured with compatibility flags for legacy dependencies
+- **Build Optimization**: Production-ready build configuration
+
+### Sample Data Included
+- **Users**: admin/admin123, user1-3/password123
+- **Posts**: Sample posts with comments and votes
+- **Groups**: Various public and private communities
+- **Tags**: Categorized content tags
 
 ## 📝 API Documentation
 
 The API documentation is available via **Swagger**:
 
-- **Swagger UI:** `http://127.0.0.1:8000/api/swagger/`
-- **Redoc:** `http://127.0.0.1:8000/api/redoc/`
-
-## ⚙️ Environment Variables
-
-Create a `.env` file to store sensitive configuration details:
-
-```ini
-SECRET_KEY=your_secret_key
-DEBUG=True
-DATABASE_NAME=my_db
-DATABASE_USER=my_username
-DATABASE_PASSWORD=my_db_password
-DATABASE_HOST=localhost
-DATABASE_PORT=5432
-```
-
+- **Swagger UI:** `http://localhost:8000/api/swagger/`
+- **Redoc:** `http://localhost:8000/api/redoc/`
 
 ## 📈 Management Commands
 
-### Generate Data in Django Shell
+### Populate Sample Data
 ```python
+# Run in Django shell: python manage.py shell
 from django.contrib.auth.models import User
-from posts.models import Post
-from groups.models import Group
+from apps.posts.models import Post
+from apps.groups.models import Group
+from apps.tags.models import Tag
+from apps.reports.models import ReportType
 
-user = User.objects.get(id=1)
-post = Post.objects.create(title="Sample Post", content="Post content here", author=user)
-group = Group.objects.create(name="Django", description="Official Django community on Django Reddit")
+# Create sample users
+for i in range(1, 4):
+    User.objects.get_or_create(
+        username=f'user{i}',
+        defaults={'email': f'user{i}@example.com', 'first_name': f'User{i}', 'last_name': 'Test'}
+    )
+
+# Create sample tags
+tags = ['Technology', 'Science', 'Programming', 'News', 'Discussion']
+for tag_name in tags:
+    Tag.objects.get_or_create(name=tag_name)
+
+# Create sample groups
+Group.objects.get_or_create(
+    name='Django Developers',
+    defaults={'description': 'Community for Django developers', 'group_type': 'public'}
+)
+
+# Create report types
+report_types = ['Spam', 'Harassment', 'Inappropriate Content', 'Copyright Violation']
+for report_type in report_types:
+    ReportType.objects.get_or_create(name=report_type)
 ```
 
-### Populate Dummy Data
-```bash
-python manage.py populate_users
-python manage.py populate_posts
-python manage.py populate_tags
-python manage.py populate_groups
+## ⚙️ Environment Configuration
+
+### Development
+- Backend: `http://localhost:8000`
+- Frontend: `http://localhost:4200`
+
+### Production
+- Configure `ALLOWED_HOSTS` in `settings.py`
+- Update `environment.ts` with production URLs
+- Set `DEBUG=False` for production
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Angular Compilation Errors**
+   ```bash
+   # Use legacy OpenSSL provider for Node.js compatibility
+   NODE_OPTIONS="--openssl-legacy-provider" ng serve
+   ```
+
+2. **TypeScript Errors**
+   - The project includes `skipLibCheck: true` in `tsconfig.json` for compatibility
+   - Froala editor is temporarily disabled due to type conflicts
+
+3. **CORS Issues**
+   - Backend is configured with `django-cors-headers`
+   - Frontend URLs are whitelisted in Django settings
+
+4. **Database Issues**
+   ```bash
+   # Reset database if needed
+   rm db.sqlite3
+   python manage.py migrate
+   python manage.py createsuperuser
+   ```
+
+
+## 🏗️ Project Structure
+
+```
+discuss/
+├── apps/                          # Django apps
+│   ├── bookmarks/                # Bookmark functionality
+│   ├── comments/                 # Comment system
+│   ├── core/                     # Core utilities
+│   ├── followers/                # User following system
+│   ├── groups/                   # Community groups
+│   ├── posts/                    # Post management
+│   ├── profiles/                 # User profiles
+│   ├── reports/                  # Content reporting
+│   └── tags/                     # Content tagging
+├── reddit_clone/                 # Django project settings
+├── static/frontend/reddit-app/   # Angular frontend
+│   ├── src/app/                  # Angular components
+│   ├── src/environments/         # Environment configs
+│   └── package.json              # Node.js dependencies
+├── requirements.txt              # Python dependencies
+└── manage.py                     # Django management script
 ```
 
+## 🤝 Contributing
 
-## 💡 Notes
-- **Backend (Django) runs on WSL**
-- **Frontend (Angular) runs directly on Windows**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
+## 📄 License
 
-## 📐 References
-- [How to Install Python 3.8 on Ubuntu 18.04](https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/)
-- [Installing Node.js on Windows](https://www.guru99.com/download-install-node-js.html)
-- [Official Angular 10 Installation Guide](https://v10.angular.io/guide/setup-local)
-- [Installing a Specific Version of Angular CLI](https://stackoverflow.com/questions/44759621/install-specific-version-of-ng-cli)
-- [Angular, Angular CLI, and Node.js Compatibility](https://stackoverflow.com/questions/60248452/is-there-a-compatibility-list-for-angular-angular-cli-and-node-js)
+This project is open source and available under the [MIT License](LICENSE).
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+1. Check the [Troubleshooting](#-troubleshooting) section
+2. Review the [API Documentation](#-api-documentation)
+3. Open an issue on GitHub
+
+---
 
 ### 🎉 **Happy Coding!** 🚀
 
