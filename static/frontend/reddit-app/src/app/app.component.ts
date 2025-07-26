@@ -6,7 +6,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { User } from './core/models/user.model';
 import { environment } from '@reddit/env/environment';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { MatDialog } from '@angular/material/dialog';
@@ -34,9 +34,21 @@ export class AppComponent implements OnInit, AfterContentChecked {
     private dialog: MatDialog,
     private http: HttpClient
   ) {
-    this.router.events.subscribe(
-      () => this.path = this.router.url
-    );
+    this.router.events.subscribe((event) => {
+      this.path = this.router.url;
+      
+      // Refresh user state when navigating away from auth routes
+      if (event instanceof NavigationEnd) {
+        const wasAuthRoute = this.authRoute;
+        this.authRoute = this.path.includes('sign-in') || this.path.includes('sign-up');
+        
+        // If we just left an auth route, refresh user state
+        if (wasAuthRoute && !this.authRoute) {
+          console.log('Left auth route, refreshing user state');
+          this.refreshUserState();
+        }
+      }
+    });
     this.path = this.router.url;
   }
 
@@ -79,6 +91,18 @@ export class AppComponent implements OnInit, AfterContentChecked {
         console.error('❌ API connectivity test failed:', error);
       }
     );
+  }
+
+  refreshUserState(): void {
+    console.log('Refreshing user state...');
+    try {
+      this.userService.fetchUser((user) => {
+        console.log('User state refreshed:', user);
+        this.user = user;
+      });
+    } catch (error) {
+      console.error('Error refreshing user state:', error);
+    }
   }
 
   ngAfterContentChecked(): void {

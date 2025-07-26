@@ -19,10 +19,14 @@ export class UserService {
   ) {
     console.log('UserService: serverUrl configured as:', this.serverUrl);
     console.log('UserService: environment:', environment);
+    
+    // Initialize user BehaviorSubject
+    this.user = new BehaviorSubject<User>(null);
   }
 
   setUser(user: User, callback?: (user: User) => any): void {
-    this.user = new BehaviorSubject(user);
+    console.log('UserService: Setting user:', user);
+    this.user.next(user);
     if (user) {
       this.storage.storeItem('user', user);
     }
