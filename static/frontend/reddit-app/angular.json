@@ -67,7 +67,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "reddit-app:build"
+            "browserTarget": "reddit-app:build",
+            "baseHref": "/django_reddit/",
+            "servePath": "/django_reddit/"
           },
           "configurations": {
             "production": {

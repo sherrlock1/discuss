@@ -5,7 +5,7 @@ export const environment = {
   production: false,
   baseUrl: '/api/v1/',
   serverUrl: (typeof window !== 'undefined' && window.location.hostname === 'localhost') 
-    ? 'http://localhost:8000' 
+    ? 'http://localhost:12000' 
     : 'https://work-1-otvuwyhcdtyibpym.prod-runtime.all-hands.dev',
   appUrl: (typeof window !== 'undefined' && window.location.hostname === 'localhost') 
     ? 'http://localhost:4200' 
