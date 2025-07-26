@@ -4,32 +4,52 @@ This document outlines known issues, limitations, and workarounds for the Django
 
 ## 🚨 Critical Issues
 
-### 1. Froala WYSIWYG Editor Compatibility
-**Status**: ❌ **Broken**  
+### 1. Frontend Display Issue - Only Font Visible
+**Status**: ❌ **Critical - App Not Functional**  
+**Affected Components**: Entire Angular frontend  
+**Description**: Angular application loads but only shows font/text in top left corner, no UI components render properly.
+
+**Symptoms**:
+- HTML page loads correctly at `http://localhost:4200/django_reddit`
+- JavaScript files load successfully (main.js, vendor.js, etc.)
+- Django API responds correctly at `http://localhost:12000/api/v1/posts/`
+- Angular dev server compiles without errors
+- Only minimal text visible in browser, no proper UI rendering
+
+**Investigation Status**:
+- ✅ Fixed baseHref routing issue (Angular dev server now serves from correct path)
+- ✅ Fixed API URL configuration (updated environment.ts to use port 12000)
+- ✅ Verified CORS configuration working
+- ❌ Root cause of UI rendering failure still unknown
+
+**Potential Causes**:
+1. CSS/SCSS compilation issues
+2. Angular Material components not loading
+3. JavaScript runtime errors preventing component initialization
+4. Missing dependencies or module loading failures
+
+**Next Steps**:
+1. Check browser console for JavaScript errors
+2. Verify Angular Material and FlexLayout modules
+3. Test with minimal component to isolate issue
+4. Check CSS compilation and loading
+
+### 2. Froala WYSIWYG Editor Replaced with CKEditor
+**Status**: ✅ **Resolved**  
 **Affected Components**: Post creation, comment editing  
-**Description**: The Froala editor has TypeScript compatibility issues with Angular 10 and Node.js 22+.
+**Description**: Successfully replaced Froala editor with CKEditor 5 to resolve licensing and compatibility issues.
 
-**Error Details**:
-```
-node_modules/froala-editor/index.d.ts:1605:15 - error TS1005: ';' expected.
-node_modules/froala-editor/index.d.ts:1605:45 - error TS1109: Expression expected.
-```
-
-**Current Workaround**:
-- Froala editor imports are commented out in:
-  - `src/app/app.module.ts`
-  - `src/app/post/create-post/create-post.component.ts`
-- Post creation falls back to basic text input
+**Changes Made**:
+- Removed Froala dependencies from package.json
+- Added CKEditor 5 (`@ckeditor/ckeditor5-angular`, `@ckeditor/ckeditor5-build-classic`)
+- Updated create-post component with CKEditor implementation
+- Added proper CKEditor styling and configuration
 
 **Impact**: 
-- ❌ No rich text editing for posts
-- ❌ No WYSIWYG formatting options
-- ✅ Basic text posting still works
-
-**Potential Solutions**:
-1. Upgrade to compatible Froala version
-2. Replace with alternative editor (TinyMCE, CKEditor)
-3. Implement custom rich text solution
+- ✅ Rich text editing now available
+- ✅ WYSIWYG formatting options working
+- ✅ No licensing issues
+- ✅ Better TypeScript compatibility
 
 ---
 
@@ -290,5 +310,34 @@ If you encounter additional issues:
 
 ---
 
+## 🚀 Current Deployment Status
+
+### Servers Running
+- ✅ **Django API**: Running on port 12000 (`http://localhost:12000`)
+- ✅ **Angular Dev Server**: Running on port 4200 (`http://localhost:4200/django_reddit`)
+
+### API Status
+- ✅ **Posts Endpoint**: `http://localhost:12000/api/v1/posts/` returning 40 test posts
+- ✅ **CORS Configuration**: Properly configured for cross-origin requests
+- ✅ **Database**: SQLite with sample data loaded
+
+### Frontend Status
+- ⚠️ **HTML Loading**: Page loads correctly with proper base href
+- ⚠️ **JavaScript Loading**: All JS bundles load successfully
+- ❌ **UI Rendering**: Critical issue - only text visible, no components render
+- ✅ **Build Process**: Angular compilation successful without errors
+
+### Recent Fixes Applied
+1. **Angular Routing**: Fixed baseHref and servePath configuration
+2. **API URLs**: Updated environment.ts to use correct port (12000)
+3. **CKEditor Integration**: Successfully replaced Froala with CKEditor 5
+4. **CORS Setup**: Configured for development and production URLs
+5. **Git Management**: All changes committed and pushed to main branch
+
+### Immediate Action Required
+The frontend display issue is preventing the application from being usable. Investigation needed to determine why Angular components are not rendering despite successful compilation and loading.
+
+---
+
 **Last Updated**: 2025-07-26  
-**Version**: Deployment Configuration Branch
+**Version**: Main Branch (Post-CKEditor Integration)
