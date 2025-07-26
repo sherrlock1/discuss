@@ -37,7 +37,8 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    # path('accounts/', include('allauth.urls')),
+    path('django_reddit/', TemplateView.as_view(template_name='index.html'), name='angular_app'),
+    path('accounts/', include('allauth.urls')),
     re_path(r'^rest-auth/', include('rest_auth.urls')),
     re_path(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     path('', include('posts.urls')),

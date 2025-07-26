@@ -48,6 +48,16 @@ export class SignUpComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log('Sign-up form submitted');
+    console.log('Form valid:', this.registerForm.valid);
+    console.log('Form values:', this.registerForm.value);
+    
+    if (!this.registerForm.valid) {
+      console.log('Form is invalid, not submitting');
+      this.snackbar.open('Please fill in all required fields');
+      return;
+    }
+
     const formData = {
       first_name: this.registerForm.value.first_name,
       last_name: this.registerForm.value.last_name,
@@ -55,21 +65,33 @@ export class SignUpComponent implements OnInit {
       password1: this.registerForm.value.password1,
       password2: this.registerForm.value.password2
     };
+    
+    console.log('Sending registration request with data:', formData);
     this.isLoading = true;
+    
     this.userService.register(formData).subscribe(
       (result) => {
+        console.log('Registration successful:', result);
         this.isLoading = false;
         this.registerForm.reset();
         this.snackbar.open('Registered successfully. Proceed to login');
         this.router.navigate(['sign-in']);
       },
       (err) => {
+        console.error('Registration error:', err);
         this.isLoading = false;
-        if(err.error.password1){
-          this.snackbar.open(`${err.error.password1[0]}`);
-        }
-        if(err.error.email){
-          this.snackbar.open(`${err.error.email[0]}`);
+        if (err.error) {
+          if (err.error.password1) {
+            this.snackbar.open(`${err.error.password1[0]}`);
+          } else if (err.error.email) {
+            this.snackbar.open(`${err.error.email[0]}`);
+          } else if (err.error.non_field_errors) {
+            this.snackbar.open(err.error.non_field_errors[0]);
+          } else {
+            this.snackbar.open('Registration failed. Please try again.');
+          }
+        } else {
+          this.snackbar.open('Network error. Please check your connection.');
         }
       }
     );

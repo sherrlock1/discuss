@@ -35,22 +35,65 @@ export class SignInComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log('Sign-in form submitted');
+    console.log('Form valid:', this.loginForm.valid);
+    console.log('Form values:', this.loginForm.value);
+    
+    if (!this.loginForm.valid) {
+      console.log('Form is invalid, not submitting');
+      this.snackbar.open('Please fill in all required fields');
+      return;
+    }
+
     const loginData = {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password
     };
+    
+    console.log('Sending login request with data:', loginData);
     this.isLoading = true;
+    
     this.userService.login(loginData).subscribe(
       (result) => {
+        console.log('Login successful:', result);
         this.isLoading = false;
         this.snackbar.open('Successfully logged in');
         this.router.navigate(['']);
       },
       (err) => {
+        console.error('Login error:', err);
         this.isLoading = false;
-        // console.log(err.error);
+        if (err.error) {
+          if (err.error.non_field_errors) {
+            this.snackbar.open(err.error.non_field_errors[0]);
+          } else if (err.error.email) {
+            this.snackbar.open(err.error.email[0]);
+          } else {
+            this.snackbar.open('Login failed. Please try again.');
+          }
+        } else {
+          this.snackbar.open('Network error. Please check your connection.');
+        }
       }
     );
+  }
+
+  onGoogleLogin(): void {
+    console.log('Google login clicked');
+    this.snackbar.open('Google login is not configured yet. Please contact the administrator.', 'Close', {
+      duration: 5000
+    });
+    // TODO: Implement Google OAuth when client credentials are configured
+    // window.location.href = `${environment.serverUrl}/accounts/google/login/`;
+  }
+
+  onFacebookLogin(): void {
+    console.log('Facebook login clicked');
+    this.snackbar.open('Facebook login is not configured yet. Please contact the administrator.', 'Close', {
+      duration: 5000
+    });
+    // TODO: Implement Facebook OAuth when app credentials are configured
+    // window.location.href = `${environment.serverUrl}/accounts/facebook/login/`;
   }
 
 }

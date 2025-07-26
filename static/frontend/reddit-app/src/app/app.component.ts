@@ -1,4 +1,5 @@
 import { AfterContentChecked, Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { UserService } from './core/services/user/user.service';
 import { StorageHandlerService } from './core/services/storage/storage-handler.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit, AfterContentChecked {
     private userService: UserService,
     private cookieService: CookieService,
     private storage: StorageHandlerService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private http: HttpClient
   ) {
     this.router.events.subscribe(
       () => this.path = this.router.url
@@ -45,6 +47,9 @@ export class AppComponent implements OnInit, AfterContentChecked {
       search: new FormControl('')
     });
     
+    // Test API connectivity
+    this.testApiConnectivity();
+    
     // Add error handling to prevent initialization issues
     try {
       this.userService.fetchUser((user) => {
@@ -55,6 +60,19 @@ export class AppComponent implements OnInit, AfterContentChecked {
       console.error('Error fetching user:', error);
       this.user = null;
     }
+  }
+
+  testApiConnectivity(): void {
+    console.log('Testing API connectivity...');
+    // Test a simple GET request to see if the API is reachable
+    this.http.get('https://work-1-otvuwyhcdtyibpym.prod-runtime.all-hands.dev/api/v1/posts/').subscribe(
+      (response) => {
+        console.log('✅ API connectivity test successful:', response);
+      },
+      (error) => {
+        console.error('❌ API connectivity test failed:', error);
+      }
+    );
   }
 
   ngAfterContentChecked(): void {

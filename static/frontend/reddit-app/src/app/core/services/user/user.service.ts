@@ -16,7 +16,10 @@ export class UserService {
   constructor(
     public http: HttpClient,
     private storage: StorageHandlerService
-  ) {}
+  ) {
+    console.log('UserService: serverUrl configured as:', this.serverUrl);
+    console.log('UserService: environment:', environment);
+  }
 
   setUser(user: User, callback?: (user: User) => any): void {
     this.user = new BehaviorSubject(user);
@@ -61,11 +64,17 @@ export class UserService {
   }
 
   register(postData) {
-    return this.http.post(this.serverUrl + '/rest-auth/registration/', postData);
+    const url = this.serverUrl + '/rest-auth/registration/';
+    console.log('UserService: Making registration request to:', url);
+    console.log('UserService: Registration data:', postData);
+    return this.http.post(url, postData);
   }
 
   login(postData) {
-    return this.http.post(this.serverUrl + '/rest-auth/login/', postData);
+    const url = this.serverUrl + '/rest-auth/login/';
+    console.log('UserService: Making login request to:', url);
+    console.log('UserService: Login data:', postData);
+    return this.http.post(url, postData);
   }
 
   logout() {
